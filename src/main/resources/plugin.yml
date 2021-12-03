@@ -1,0 +1,10 @@
+name: TwipR
+main: com.gmail.lilllung09.twipr.TwipR
+version: 3.0
+author : lilllung09
+description : this is test plugin
+commands :
+  twipr :
+    description : lilllung09 first plugin
+libraries:
+  - com.neovisionaries:nv-websocket-client:2.14
