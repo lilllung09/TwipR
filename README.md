@@ -57,7 +57,7 @@ In commands you can use these
 
 
 
-In Minecraft, this command will help you.
+In Minecraft, this command will help you
 ```
 /twipr help
 ```
