@@ -1,0 +1,9 @@
+/src/main/resources/
+/.gradle/
+/.idea/
+/build/
+/gradle/
+/META-INF/
+/out/
+/gradlew
+/gradlew.bat
