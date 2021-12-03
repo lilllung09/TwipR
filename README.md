@@ -1,6 +1,7 @@
 # TwipR 3.0
 ## My First Minecraft Plugin
-####Test on 1.16.5
+Test on 1.16.5
+
 This plugin makes minecraft server to listen Twip slotmachine result.  
 Before use this, you must create "streamer.json" in "plugins/TwipR/" until I update. sorry
 
