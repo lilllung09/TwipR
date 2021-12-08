@@ -75,7 +75,7 @@ public class EventSlotMachine {
     private void logFile(String minecraft_name, String sender, String amount, String itemName) {
         try {
             FileWriter fw = new FileWriter(TwipR.plugin.getDataFolder().getPath() + "/" + minecraft_name + ".json", StandardCharsets.UTF_8, true);
-            fw.append(new Date() + ", " + minecraft_name + ", " + sender + ", " + amount + ", " + itemName);
+            fw.append("[" + new Date() + "]: " + sender + ", " + amount + ", " + itemName + System.lineSeparator());
             fw.flush();
             fw.close();
         } catch (Exception exception) {

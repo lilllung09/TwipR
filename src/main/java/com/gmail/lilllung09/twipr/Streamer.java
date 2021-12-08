@@ -12,11 +12,13 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 
+import java.io.FileWriter;
 import java.net.URI;
 import java.net.URLEncoder;
 
 import java.nio.charset.StandardCharsets;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -80,16 +82,19 @@ public class Streamer {
     }
 
     private WebSocketListener webSocketListener = new WebSocketAdapter() {
-        public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+        public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
             TwipRMessage.sendMsgConsol(minecraft_name + " <- connected...");
             Bukkit.getScheduler().runTaskTimer(TwipR.plugin, () -> websocket.sendText("2"), 100L, 100L);
         }
 
-        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
+        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
             TwipRMessage.sendMsgConsol(minecraft_name + " <- disconnected...");
         }
 
         public void onTextMessage(WebSocket websocket, String message) {
+            //if (message.startsWith("3")) return;
+
+            //logFile(minecraft_name, message);
             if (!message.startsWith("42"))
                 return;
             if (message.contains("TOKEN_NOT_FOUND")) {
@@ -138,6 +143,16 @@ public class Streamer {
         } catch (WebSocketException e) {
             e.printStackTrace();
         }
+    }
+
+    private void logFile(String minecraft_name, String message) {
+        try {
+            FileWriter fw = new FileWriter(TwipR.plugin.getDataFolder().getPath() + "/log_" + minecraft_name + ".json", StandardCharsets.UTF_8, true);
+            fw.append("["+new Date() + "]: " + message + System.lineSeparator());
+            fw.flush();
+            fw.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();}
     }
 
 }
