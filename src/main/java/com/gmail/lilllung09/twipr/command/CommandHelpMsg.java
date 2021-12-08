@@ -12,7 +12,7 @@ public class CommandHelpMsg implements DefaultCommand {
 		if (args.length <= 1 ) {// twipr help
 			TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
 					+ "[" +
-							"{\"text\":\"\\n\"},{\"text\":\"==========TwipR 3.0==========\\n\"}" +
+							"{\"text\":\"\\n\"},{\"text\":\"==========TwipR==========\\n\"}" +
 
 							(commandSender.isOp() ?
 									",{\"text\":\"/twipr reload - 플러그인 재시작하기\\n\"" +
@@ -42,7 +42,7 @@ public class CommandHelpMsg implements DefaultCommand {
 						TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
 										+ "[" +
 										"{\"text\":\"\\n\"}" +
-										",{\"text\":\"==========TwipR 3.0==========\\n\"}" +
+										",{\"text\":\"==========TwipR==========\\n\"}" +
 
 										",{\"text\":\"/twipr st add [minecraftID] : 스트리머로 등록합니다.\\n\",\"bold\":false" +
 										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 나를 추가\"}]}" +
@@ -70,7 +70,7 @@ public class CommandHelpMsg implements DefaultCommand {
 						TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
 										+ "[" +
 										"{\"text\":\"\\n\"}" +
-										",{\"text\":\"==========TwipR 3.0==========\\n\"}" +
+										",{\"text\":\"==========TwipR==========\\n\"}" +
 
 										",{\"text\":\"/twipr st add : 자신을 스트리머로 등록합니다.\\n\",\"bold\":false" +
 										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
