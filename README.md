@@ -1,4 +1,4 @@
-# TwipR 3.0
+# TwipR 3.0.1
 ## My First Minecraft Plugin
 Test on 1.16.5
 
@@ -61,3 +61,12 @@ In Minecraft, this command will help you
 ```
 /twipr help
 ```
+
+
+##Version History
+v3.0.1  
+add command /twipr test [true|false]  
+execute slotmachine test result or not  
+
+v3.0  
+First Release

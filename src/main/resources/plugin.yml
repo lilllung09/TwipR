@@ -1,6 +1,6 @@
 name: TwipR
 main: com.gmail.lilllung09.twipr.TwipR
-version: 3.0
+version: 3.0.1
 author : lilllung09
 description : this is test plugin
 commands :

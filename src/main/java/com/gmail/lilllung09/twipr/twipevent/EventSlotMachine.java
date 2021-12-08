@@ -42,7 +42,7 @@ public class EventSlotMachine {
         }
 
         //it was just test
-        if (o.get("_id").getAsString().equals("TEST")) {
+        if (o.get("_id").getAsString().equals("TEST") && !TwipR.RUN_TEST_RESULT) {
             TwipRMessage.sendMsgConsol(minecraft_name + " -> 룰렛 테스트 [" + minecraft_name + "]");
             TwipRMessage.runCmd("title " + minecraft_name + " title [{\"text\":\"[\",\"color\":\"white\"},{\"text\":\"룰렛\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"white\"},{\"text\":\"" + sender + "\"}]", 0L);
             TwipRMessage.runCmd("title " + minecraft_name + " subtitle {\"text\":\"진짜인 줄 알았는데, 알고보니 룰렛 테스트 중이었네요.\",\"color\":\"white\"}", 0L);

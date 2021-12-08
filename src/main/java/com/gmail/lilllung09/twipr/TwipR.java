@@ -9,12 +9,13 @@ public class TwipR extends JavaPlugin {
 
     public static Plugin plugin = null;
     public static TwipConnection twipConnection = null;
+    public static boolean RUN_TEST_RESULT = false;
 
     @Override
     public void onEnable() {
         TwipRMessage.sendMsgConsol("[TwipR 플러그인 활성화 중 입니다]");
 
-        this.plugin = this;
+        plugin = this;
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
@@ -24,13 +25,13 @@ public class TwipR extends JavaPlugin {
         getCommand("twipr").setTabCompleter(new CommandTabComplete(this));
 
 
-        this.twipConnection = new TwipConnection();
+        twipConnection = new TwipConnection();
     }
     @Override
     public void onDisable() {
         TwipRMessage.sendMsgConsol("[TwipR 플러그인 비활성화 중 입니다]");
-        if (this.twipConnection != null) {
-            this.twipConnection.disconnectAllStremaer();
+        if (twipConnection != null) {
+            twipConnection.disconnectAllStremaer();
         }
     }
 

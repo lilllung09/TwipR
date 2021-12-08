@@ -17,6 +17,7 @@ public class CommandRunner implements CommandExecutor {
 		REPOSITORY_COMMANDS.put("st", new CommandStreamer());
 		REPOSITORY_COMMANDS.put("missmatch", new CommandMissMatchArgs());
 		REPOSITORY_COMMANDS.put("state", new CommandConnectState());
+		REPOSITORY_COMMANDS.put("test", new CommandTestONOFF());
 	}
 
 	public CommandRunner(Plugin plugin) {

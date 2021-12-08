@@ -26,6 +26,7 @@ public class CommandTabComplete implements TabCompleter {
             if (sender.isOp()) {
                 list.add("reload");
                 list.add("state");
+                list.add("test");
             }
 
             list.add("st");
@@ -44,6 +45,11 @@ public class CommandTabComplete implements TabCompleter {
                     list.add("key");
                     list.add("token");
                     list.add("preset");
+                    break;
+
+                case "test":
+                    list.add("true");
+                    list.add("false");
                     break;
             }
 
