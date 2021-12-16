@@ -1,7 +1,6 @@
 package com.gmail.lilllung09.twipr.command;
 
 import com.gmail.lilllung09.twipr.TwipRMessage;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class CommandMissMatchArgs implements DefaultCommand {

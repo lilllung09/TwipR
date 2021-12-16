@@ -4,8 +4,6 @@ import com.gmail.lilllung09.twipr.TwipR;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import org.bukkit.command.CommandSender;
 
-import java.text.ParseException;
-
 public class CommandTestONOFF implements DefaultCommand{
     @Override
     public void execCommand(CommandSender commandSender, String[] args) {

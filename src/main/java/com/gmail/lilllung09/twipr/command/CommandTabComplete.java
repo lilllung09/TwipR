@@ -27,6 +27,7 @@ public class CommandTabComplete implements TabCompleter {
                 list.add("reload");
                 list.add("state");
                 list.add("test");
+                list.add("queue");
             }
 
             list.add("st");
@@ -45,11 +46,18 @@ public class CommandTabComplete implements TabCompleter {
                     list.add("key");
                     list.add("token");
                     list.add("preset");
+                    list.add("worlds");
                     break;
 
                 case "test":
                     list.add("true");
                     list.add("false");
+                    break;
+
+                case "queue":
+                    list.add("start");
+                    list.add("pause");
+                    list.add("stop");
                     break;
             }
 

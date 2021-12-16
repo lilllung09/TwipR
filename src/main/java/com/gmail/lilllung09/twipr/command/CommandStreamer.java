@@ -6,6 +6,7 @@ import com.gmail.lilllung09.twipr.TwipR;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.bukkit.command.CommandSender;
 
@@ -220,7 +221,7 @@ public class CommandStreamer implements DefaultCommand {
     }
 
     private Streamer registeStreamer(String minecraftID) {
-        Streamer s = new Streamer(false, " ", " ", minecraftID, " ");
+        Streamer s = new Streamer(false, " ", " ", minecraftID, " ", new String[]{});
 
         TwipConnection.TwipStreamers.put(minecraftID, s);
 
@@ -229,6 +230,7 @@ public class CommandStreamer implements DefaultCommand {
         streamer.addProperty("alertbox_key", "");
         streamer.addProperty("alertbox_token", "");
         streamer.addProperty("slotmachine", "");
+        streamer.add("apply_worlds", new JsonArray());
 
         TwipConnection.STREAMERSJSON.getAsJsonObject("streamers").add(minecraftID, streamer);
 
@@ -262,7 +264,13 @@ public class CommandStreamer implements DefaultCommand {
         String token = o.get("alertbox_token").getAsString();
         String presset = o.get("slotmachine").getAsString();
 
-        TwipConnection.TwipStreamers.put(minecraftID, new Streamer(connect, key, token, minecraftID, presset));
+        JsonArray jWorlds = o.get("apply_worlds").getAsJsonArray();
+        String[] worlds = new String[jWorlds.size()];
+
+        for (int i = 0; i < jWorlds.size(); i++)
+            worlds[i] = jWorlds.get(i).getAsString();
+
+        TwipConnection.TwipStreamers.put(minecraftID, new Streamer(connect, key, token, minecraftID, presset, worlds));
         return true;
     }
 

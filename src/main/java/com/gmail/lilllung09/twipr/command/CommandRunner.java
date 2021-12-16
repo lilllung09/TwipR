@@ -8,20 +8,17 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 
 public class CommandRunner implements CommandExecutor {
-	private Plugin plugin;
-	private static final Map<String, DefaultCommand> REPOSITORY_COMMANDS = new HashMap<>();
-	
-	static {
+	private Map<String, DefaultCommand> REPOSITORY_COMMANDS = new HashMap<>();
+
+	public CommandRunner(Plugin plugin) {
+
 		REPOSITORY_COMMANDS.put("help", new CommandHelpMsg());
 		REPOSITORY_COMMANDS.put("reload", new CommandReload());
 		REPOSITORY_COMMANDS.put("st", new CommandStreamer());
 		REPOSITORY_COMMANDS.put("missmatch", new CommandMissMatchArgs());
 		REPOSITORY_COMMANDS.put("state", new CommandConnectState());
 		REPOSITORY_COMMANDS.put("test", new CommandTestONOFF());
-	}
-
-	public CommandRunner(Plugin plugin) {
-		this.plugin = plugin;
+		REPOSITORY_COMMANDS.put("queue", new CommandQueue(plugin));
 	}
 
 	@Override

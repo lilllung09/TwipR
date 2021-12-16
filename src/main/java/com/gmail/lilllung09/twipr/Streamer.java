@@ -18,9 +18,7 @@ import java.net.URLEncoder;
 
 import java.nio.charset.StandardCharsets;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.net.ssl.SSLContext;
 
@@ -33,19 +31,21 @@ public class Streamer {
     private String token = null;
     private String minecraft_name = null;
     private String preset = null;
+    private String[] worlds;
 
     private WebSocket ws;
 
+    private Queue<EventSlotMachine> slotMachineQueue = new LinkedList<>();
+
     JsonParser parser = new JsonParser();
 
-    public Streamer(boolean connect, String alertbox_key, String alertbox_token, String minecraft_name, String preset) {
+    public Streamer(boolean connect, String alertbox_key, String alertbox_token, String minecraft_name, String preset, String[] worlds) {
         this.connect = connect;
         this.key = alertbox_key;
         this.token = alertbox_token;
         this.minecraft_name = minecraft_name;
         this.preset = preset;
-
-
+        this.worlds = worlds;
 
         StringBuilder url = new StringBuilder();
         try {
@@ -107,11 +107,27 @@ public class Streamer {
             }
             if (message.contains("new donate")) {
                 JsonObject jsonObject = parser.parse(message.substring(2)).getAsJsonArray().get(1).getAsJsonObject();
-                if (jsonObject.getAsJsonObject("slotmachine_data") != null)
-                    new EventSlotMachine(minecraft_name, jsonObject);
+                if (jsonObject.getAsJsonObject("slotmachine_data") != null) {
+                    if (TwipConnection.queueTaskID == -1) {
+                        new EventSlotMachine(minecraft_name, jsonObject).consume();
+                    } else {
+                        slotMachineQueue.add(new EventSlotMachine(minecraft_name, jsonObject));
+                    }
+                }
             }
         }
     };
+
+    public EventSlotMachine getSlotMachineQueuePeek() {
+        return this.slotMachineQueue.poll();
+    }
+    public int slotMachineQueueSize() {
+        return this.slotMachineQueue.size();
+    }
+    public String[] applyWorlds() {
+        return this.worlds;
+    }
+
 
     public boolean getConnect() {
         return this.connect;

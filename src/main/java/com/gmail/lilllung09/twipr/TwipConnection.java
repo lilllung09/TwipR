@@ -1,6 +1,7 @@
 package com.gmail.lilllung09.twipr;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.MalformedJsonException;
@@ -23,6 +24,8 @@ public class TwipConnection {
 	public static JsonObject STREAMERSJSON = null;
 	public static Map<String, Streamer> TwipStreamers = new HashMap<>();
 	public static Map<String, JsonObject> SlotMachinePreset = new HashMap<>();
+
+	public static int queueTaskID;
 	
 	private Plugin plugin = TwipR.plugin;
 
@@ -54,7 +57,9 @@ public class TwipConnection {
 				stremaerList.add(entry.getKey());
 				Bukkit.getScheduler().runTaskLater(TwipR.plugin, () -> {
 					Streamer s = initStreamer(entry.getKey(), jsonStreamer.getAsJsonObject(entry.getKey()));
-					TwipStreamers.put(entry.getKey(), s);
+					if (s != null) {
+						TwipStreamers.put(entry.getKey(), s);
+					}
 				}, 60L);
 			});
 			TwipRMessage.sendMsgConsol("등록된 스트리머 (" + streamers.size() + "): " + stremaerList);
@@ -72,11 +77,26 @@ public class TwipConnection {
 	}
 
 	private Streamer initStreamer(String minecraft_name, JsonObject o) {
+		if (o.get("connect") == null || o.get("alertbox_key") == null
+				|| o.get("alertbox_token") == null || o.get("slotmachine") == null
+				|| o.get("apply_worlds") == null || !o.get("apply_worlds").isJsonArray()) {
+			TwipRMessage.sendWanConsol(minecraft_name + "은 잘못된 설정값 입니다.");
+			return null;
+		}
+
 		boolean connect = o.get("connect").getAsBoolean();
 		String key = o.get("alertbox_key").getAsString();
 		String token = o.get("alertbox_token").getAsString();
 		String presset = o.get("slotmachine").getAsString();
-		return new Streamer(connect, key, token, minecraft_name, presset);
+
+		JsonArray jWorlds = o.get("apply_worlds").getAsJsonArray();
+		String[] worlds = new String[jWorlds.size()];
+
+		for (int i = 0; i < jWorlds.size(); i++)
+			worlds[i] = jWorlds.get(i).getAsString();
+
+
+		return new Streamer(connect, key, token, minecraft_name, presset, worlds);
 	}
 
 	public void disconnectAllStremaer() {

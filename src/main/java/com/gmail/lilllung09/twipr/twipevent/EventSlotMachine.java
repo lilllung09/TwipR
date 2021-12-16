@@ -5,18 +5,26 @@ import com.gmail.lilllung09.twipr.TwipConnection;
 import com.gmail.lilllung09.twipr.TwipR;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class EventSlotMachine {
 
+    private JsonArray cmdArray;
+    private String minecraft_name;
+    private String sender;
+    private String comment, amount;
+    private String itemName;
+    private int duraiton;
+
     public EventSlotMachine(String minecraft_name, JsonObject o) {
-        String sender = o.get("nickname").getAsString();
-        String comment = o.get("comment").getAsString();
-        String amount = o.get("amount").getAsString();
+        this.minecraft_name = minecraft_name;
+        this.sender = o.get("nickname").getAsString();
+        this.comment = o.get("comment").getAsString();
+        this.amount = o.get("amount").getAsString();
 
         JsonObject slotmachineData = o.getAsJsonObject("slotmachine_data");
 
@@ -33,9 +41,9 @@ public class EventSlotMachine {
 
         JsonArray itemsList = slotmachineData.getAsJsonArray("items");
         int gotchaIndex = slotmachineData.get("gotcha").getAsInt();
-        int duraiton = slotmachineData.getAsJsonObject("config").get("duration").getAsInt() * 20;
+        duraiton = slotmachineData.getAsJsonObject("config").get("duration").getAsInt() * 20;
 
-        String itemName = itemsList.get(gotchaIndex - 1).getAsString();
+        this.itemName = itemsList.get(gotchaIndex - 1).getAsString();
         if (!j.has(itemName)) {
             TwipRMessage.sendWanConsol(minecraft_name + " ->  item[" + itemName + "] was not registered in preset[" + s.getPreset() + "]");
             return;
@@ -44,20 +52,25 @@ public class EventSlotMachine {
         //it was just test
         if (o.get("_id").getAsString().equals("TEST") && !TwipR.RUN_TEST_RESULT) {
             TwipRMessage.sendMsgConsol(minecraft_name + " -> 룰렛 테스트 [" + minecraft_name + "]");
-            TwipRMessage.runCmd("title " + minecraft_name + " title [{\"text\":\"[\",\"color\":\"white\"},{\"text\":\"룰렛\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"white\"},{\"text\":\"" + sender + "\"}]", 0L);
-            TwipRMessage.runCmd("title " + minecraft_name + " subtitle {\"text\":\"진짜인 줄 알았는데, 알고보니 룰렛 테스트 중이었네요.\",\"color\":\"white\"}", 0L);
+            TwipRMessage.runCmd("tellraw " + minecraft_name + " title [{\"text\":\"[\",\"color\":\"white\"},{\"text\":\"룰렛\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"white\"},{\"text\":\"" + sender + "\"}]", 0L);
+            TwipRMessage.runCmd("tellraw " + minecraft_name + " subtitle {\"text\":\"진짜인 줄 알았는데, 알고보니 룰렛 테스트 중이었네요.\",\"color\":\"white\"}", 0L);
             return;
         }
 
         JsonObject itemConfig = j.getAsJsonObject(itemName);
         if (itemConfig.has("commands")) {
-            JsonArray cmdArray = itemConfig.getAsJsonArray("commands");
-            cmdArray.forEach(cmd -> TwipRMessage.runCmd(cmdParser(cmd.getAsString(), minecraft_name, sender, comment, amount, itemName), duraiton));
+            cmdArray = itemConfig.getAsJsonArray("commands");
         }
 
         logging(new String[] { minecraft_name, "after " + duraiton / 20 + "sec", itemName });
         logFile(minecraft_name, sender, amount, itemName);
 
+    }
+
+    public void consume() {
+        if (cmdArray != null) {
+            cmdArray.forEach(cmd -> TwipRMessage.runCmd(cmdParser(cmd.getAsString(), minecraft_name, sender, comment, amount, itemName), duraiton));
+        }
     }
 
     private String cmdParser(String cmd, String minecraft_name, String sender, String comment, String amount, String itemName) {
