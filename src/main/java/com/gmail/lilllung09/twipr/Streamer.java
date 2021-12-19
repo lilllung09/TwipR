@@ -108,8 +108,9 @@ public class Streamer {
             if (message.contains("new donate")) {
                 JsonObject jsonObject = parser.parse(message.substring(2)).getAsJsonArray().get(1).getAsJsonObject();
                 if (jsonObject.getAsJsonObject("slotmachine_data") != null) {
-                    if (TwipConnection.queueTaskID == -1) {
-                        new EventSlotMachine(minecraft_name, jsonObject).consume();
+                    if (TwipConnection.queueTaskState == TwipConnection.QUEUE_STATE_STOP) {
+                        slotMachineQueue.add(new EventSlotMachine(minecraft_name, jsonObject));
+                        getSlotMachineQueuePeek().consume();
                     } else {
                         slotMachineQueue.add(new EventSlotMachine(minecraft_name, jsonObject));
                     }

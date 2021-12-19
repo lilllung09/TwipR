@@ -52,8 +52,10 @@ public class EventSlotMachine {
         //it was just test
         if (o.get("_id").getAsString().equals("TEST") && !TwipR.RUN_TEST_RESULT) {
             TwipRMessage.sendMsgConsol(minecraft_name + " -> 룰렛 테스트 [" + minecraft_name + "]");
-            TwipRMessage.runCmd("tellraw " + minecraft_name + " title [{\"text\":\"[\",\"color\":\"white\"},{\"text\":\"룰렛\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"white\"},{\"text\":\"" + sender + "\"}]", 0L);
-            TwipRMessage.runCmd("tellraw " + minecraft_name + " subtitle {\"text\":\"진짜인 줄 알았는데, 알고보니 룰렛 테스트 중이었네요.\",\"color\":\"white\"}", 0L);
+            TwipRMessage.runCmd("tellraw " + minecraft_name + " [{\"text\":\"[\",\"color\":\"white\"}" +
+                    ",{\"text\":\"룰렛\",\"color\":\"green\"}" +
+                    ",{\"text\":\"] \",\"color\":\"white\"},{\"text\":\"" + sender + "\"}" +
+                    ",{\"text\":\" 진짜인 줄 알았는데, 알고보니 룰렛 테스트 중이었네요.\",\"color\":\"white\"}]", 0L);
             return;
         }
 
@@ -62,8 +64,8 @@ public class EventSlotMachine {
             cmdArray = itemConfig.getAsJsonArray("commands");
         }
 
-        logging(new String[] { minecraft_name, "after " + duraiton / 20 + "sec", itemName });
         logFile(minecraft_name, sender, amount, itemName);
+        logging(new String[] { minecraft_name, "after " + duraiton / 20 + "sec", itemName, "" + (TwipConnection.TwipStreamers.get(minecraft_name).slotMachineQueueSize()+1)});
 
     }
 
@@ -81,6 +83,7 @@ public class EventSlotMachine {
             parsedCmd = parsedCmd.replace("%sender%", sender);
             parsedCmd = parsedCmd.replace("%amount%", amount);
             parsedCmd = parsedCmd.replace("%slot_item_name%", itemName);
+            parsedCmd = parsedCmd.replace("%slot_result_remain%", "" + (TwipConnection.TwipStreamers.get(minecraft_name).slotMachineQueueSize()+1));
         }
         return parsedCmd;
     }
@@ -96,6 +99,6 @@ public class EventSlotMachine {
     }
 
     private void logging(String[] args) {
-        TwipRMessage.sendMsgConsol(args[0] + ", " + args[1] + ", " + args[2]);
+        TwipRMessage.sendMsgConsol(args[0] + ", " + args[1] + ", 남음: " + args[3] + "개, " + args[2] );
     }
 }

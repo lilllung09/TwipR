@@ -25,12 +25,16 @@ public class TwipConnection {
 	public static Map<String, Streamer> TwipStreamers = new HashMap<>();
 	public static Map<String, JsonObject> SlotMachinePreset = new HashMap<>();
 
+	public static final char QUEUE_STATE_STOP = 's';
+	public static final char QUEUE_STATE_RUN = 'r';
+	public static final char QUEUE_STATE_PAUSE = 'p';
+
 	public static int queueTaskID;
-	
+	public static char queueTaskState = QUEUE_STATE_STOP;
+
 	private Plugin plugin = TwipR.plugin;
 
 	public TwipConnection() {
-		
 		if (!(new File(this.plugin.getDataFolder().getPath() + "/streamer.json")).exists()) {
 			TwipRMessage.sendWanConsol("stremaers.json 파일이 존재하지 않습니다!");
 			return;
