@@ -1,5 +1,5 @@
-# TwipR 3.0.1
-## My First Minecraft Plugin
+# TwipR 3.1.0
+## My First Minecraft Plugin!
 Test on 1.16.5
 
 This plugin makes minecraft server to listen Twip slotmachine result.  
@@ -25,7 +25,8 @@ And streamers can be more than one, preset too.
       "alertbox_token":"",
       "slotmachine":"",
       "alertbox_key":"",
-      "connect":false
+      "connect":false,
+      "apply_worlds": []
     }
   },
   "preset":{
@@ -48,11 +49,12 @@ And streamers can be more than one, preset too.
 
 In commands you can use these
 ```
-%minecraft_name%    -> minecraft_name
-%comment%           -> comment
-%sender%            -> sender
-%amount%            -> amount
-%slot_item_name%    -> itemName
+%minecraft_name%      -> minecraft_name
+%comment%             -> comment
+%sender%              -> sender
+%amount%              -> amount
+%slot_item_name%      -> itemName
+%slot_result_remain%  -> remain slot result (queue mode)
 ```
 
 
@@ -63,6 +65,9 @@ In Minecraft, this command will help you
 ```
 
 ##Version History
+v3.1.0  
+add permissons  
+add slot machine result queue with custom period
 
 v3.0.1  
 add command /twipr test [true|false]  

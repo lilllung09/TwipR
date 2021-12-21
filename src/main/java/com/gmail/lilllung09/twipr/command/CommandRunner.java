@@ -14,9 +14,9 @@ public class CommandRunner implements CommandExecutor {
 
 	public CommandRunner(Plugin plugin) {
 		registered_commands.put("help", new CommandHelpMsg());
-		registered_commands.put("reload", new CommandReload());
 		registered_commands.put("st", new CommandStreamer(plugin));
-		registered_commands.put("missmatch", new CommandMissMatchArgs());
+
+		registered_commands.put("reload", new CommandReload());
 		registered_commands.put("state", new CommandConnectState());
 		registered_commands.put("test", new CommandTestONOFF());
 		registered_commands.put("queue", new CommandQueue(plugin));
@@ -32,7 +32,7 @@ public class CommandRunner implements CommandExecutor {
 		}
 
 		if (!registered_commands.containsKey(args[0])) {
-			registered_commands.get("missmatch").execCommand(sender, args);
+			new CommandMissMatchArgs().execCommand(sender, args);
 			return false;
 		}
 

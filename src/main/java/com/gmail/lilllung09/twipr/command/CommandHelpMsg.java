@@ -1,5 +1,6 @@
 package com.gmail.lilllung09.twipr.command;
 
+import com.gmail.lilllung09.twipr.Permissions;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import org.bukkit.command.CommandSender;
 
@@ -15,6 +16,8 @@ public class CommandHelpMsg extends DefaultCommand {
 					+ "[" +
 							"{\"text\":\"\\n\"},{\"text\":\"==========TwipR==========\\n\"}" +
 
+							",{\"text\":\"/twipr help [sub] - 전체 또는 sub 명령어에 대한 설명을 보여줍니다.\\n\"}" +
+
 							(sender.isOp() ?
 									",{\"text\":\"/twipr reload - 플러그인 재시작하기\\n\"" +
 									",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
@@ -22,11 +25,17 @@ public class CommandHelpMsg extends DefaultCommand {
 
 									",{\"text\":\"/twipr state - 스트리머 연결상태 보기\\n\"" +
 									",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
-									",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr state\"}}"
+									",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr state\"}}" +
+
+									",{\"text\":\"/twipr test [true|false] - 트윕 테스트 후원 결과 적용\\n\"" +
+									",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
+									",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr test\"}}" +
+
+									",{\"text\":\"/twipr help queue - 큐 형식 슬롯머신 결과 적용 관련 명령어 보기\\n\"" +
+									",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
+									",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr help queue\"}}"
 									
 									: "") +
-
-							",{\"text\":\"/twipr help [sub] - 전체 또는 sub 명령어에 대한 설명을 보여줍니다.\\n\"}" +
 
 
 							",{\"text\":\"/twipr help st - 스트리머 설정 관련 명령어 보기\\n\"" +
@@ -39,7 +48,7 @@ public class CommandHelpMsg extends DefaultCommand {
 		} else if (args.length == 2) {// twipr help streamer | ...
 			switch (args[1]) {
 				case "st" :
-					if (sender.isOp()) {
+					if (sender.hasPermission(Permissions.COMMANDS_ST_EDIT.getValue())) {
 						TwipRMessage.runCmd("tellraw " + sender.getName() + " "
 										+ "[" +
 										"{\"text\":\"\\n\"}" +
@@ -99,6 +108,43 @@ public class CommandHelpMsg extends DefaultCommand {
 					}
 					break;
 
+				case "queue":
+					if (sender.hasPermission(Permissions.COMMANDS_QUEUE.getValue())) {
+						TwipRMessage.runCmd("tellraw " + sender.getName() + " "
+										+ "[" +
+										"{\"text\":\"\\n\"}" +
+										",{\"text\":\"==========TwipR==========\\n\"}" +
+
+										",{\"text\":\"/twipr queue start [sec] : sec 초 마다 룰렛 결과를 적용합니다.(기본값: 4초)\\n\",\"bold\":false" +
+										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 큐 시작\"}]}" +
+										",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr queue start\"}" +
+										"}" +
+
+										",{\"text\":\"/twipr queue pause : 큐가 일시정지 됩니다.\\n\",\"bold\":false" +
+										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 큐 일시정지\"}]}" +
+										",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr queue pause\"}" +
+										"}" +
+
+										",{\"text\":\"/twipr queue stop : 큐 형식이 중지 되고 결과가 바로 적용됩니다.\\n\",\"bold\":false" +
+										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 큐 중지\"}]}" +
+										",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr queue stop\"}" +
+										"}" +
+
+										",{\"text\":\"/twipr queue check : 각 스트리머의 큐 상태를 보여줍니다.(스트리머에게도 각자의 상태를 보여줍니다, 0개 제외)\\n\",\"bold\":false" +
+										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
+										",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr queue check\"}" +
+										"}" +
+
+										",{\"text\":\"/twipr queue check o : 각 스트리머의 큐 상태를 자신만 봅니다.\\n\",\"bold\":false" +
+										",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
+										",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr queue check o\"}" +
+										"}" +
+
+
+										"]"
+								, 0);
+					}
+					break;
 
 				default:
 					new CommandMissMatchArgs().execCommand(sender, args);
