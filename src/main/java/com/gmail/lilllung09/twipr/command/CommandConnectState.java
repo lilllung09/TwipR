@@ -1,18 +1,20 @@
 package com.gmail.lilllung09.twipr.command;
 
+import com.gmail.lilllung09.twipr.Permissions;
 import com.gmail.lilllung09.twipr.TwipConnection;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import org.bukkit.command.CommandSender;
 
-public class CommandConnectState implements DefaultCommand {
+public class CommandConnectState extends DefaultCommand {
     @Override
-    public void execCommand(CommandSender commandSender, String[] args) {
-        if (!commandSender.isOp()) {
-            new CommandNoPermission().execCommand(commandSender, args);
+    public void execCommand(CommandSender sender, String[] args) {
+        if (!sender.hasPermission(Permissions.COMMANDS_STATE.getValue())) {
+            new CommandNoPermission().execCommand(sender, args);
             return ;
+
         }
 
-        TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
+        TwipRMessage.runCmd("tellraw " + sender.getName() + " "
                         + "[" +
                         "{\"text\":\"\\n\"},{\"text\":\"==========TwipR Connect State=======[Red is OFF]===\\n\"}" +
                         parse() +

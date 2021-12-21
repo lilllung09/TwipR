@@ -3,18 +3,19 @@ package com.gmail.lilllung09.twipr.command;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import org.bukkit.command.CommandSender;
 
-public class CommandHelpMsg implements DefaultCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommandHelpMsg extends DefaultCommand {
 
 	@Override
-	public void execCommand(CommandSender commandSender, String[] args) {
-
-
+	public void execCommand(CommandSender sender, String[] args) {
 		if (args.length <= 1 ) {// twipr help
-			TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
+			TwipRMessage.runCmd("tellraw " + sender.getName() + " "
 					+ "[" +
 							"{\"text\":\"\\n\"},{\"text\":\"==========TwipR==========\\n\"}" +
 
-							(commandSender.isOp() ?
+							(sender.isOp() ?
 									",{\"text\":\"/twipr reload - 플러그인 재시작하기\\n\"" +
 									",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"클릭 하여 실행\"}]}" +
 									",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/twipr reload\"}}" +
@@ -38,8 +39,8 @@ public class CommandHelpMsg implements DefaultCommand {
 		} else if (args.length == 2) {// twipr help streamer | ...
 			switch (args[1]) {
 				case "st" :
-					if (commandSender.isOp()) {
-						TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
+					if (sender.isOp()) {
+						TwipRMessage.runCmd("tellraw " + sender.getName() + " "
 										+ "[" +
 										"{\"text\":\"\\n\"}" +
 										",{\"text\":\"==========TwipR==========\\n\"}" +
@@ -67,7 +68,7 @@ public class CommandHelpMsg implements DefaultCommand {
 										"]"
 								, 0);
 					} else {
-						TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
+						TwipRMessage.runCmd("tellraw " + sender.getName() + " "
 										+ "[" +
 										"{\"text\":\"\\n\"}" +
 										",{\"text\":\"==========TwipR==========\\n\"}" +
@@ -100,13 +101,19 @@ public class CommandHelpMsg implements DefaultCommand {
 
 
 				default:
-					new CommandMissMatchArgs().execCommand(commandSender, args);
+					new CommandMissMatchArgs().execCommand(sender, args);
 					break;
 
 			}
-		} else {
-			new CommandMissMatchArgs().execCommand(commandSender, args);
 		}
+	}
+
+	@Override
+	public List<String> getSubCommands(CommandSender sender, String[] args) {
+		List<String> list = new ArrayList<>();
+		list.add("st");
+
+		return super.getMatchingSubCommands(list, args[args.length-1]);
 	}
 
 }

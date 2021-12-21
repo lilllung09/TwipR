@@ -31,16 +31,15 @@ public class TwipConnection {
 
 	public static int queueTaskID;
 	public static char queueTaskState = QUEUE_STATE_STOP;
-
-	private Plugin plugin = TwipR.plugin;
+	public static int queuePeriod;
 
 	public TwipConnection() {
-		if (!(new File(this.plugin.getDataFolder().getPath() + "/streamer.json")).exists()) {
+		if (!(new File(TwipR.plugin.getDataFolder().getPath() + "/streamer.json")).exists()) {
 			TwipRMessage.sendWanConsol("stremaers.json 파일이 존재하지 않습니다!");
 			return;
 		}
 
-		try (FileReader fr = new FileReader(this.plugin.getDataFolder().getPath() + "/streamer.json", StandardCharsets.UTF_8)) {
+		try (FileReader fr = new FileReader(TwipR.plugin.getDataFolder().getPath() + "/streamer.json", StandardCharsets.UTF_8)) {
 			Gson gson = new Gson();
 			STREAMERSJSON = gson.fromJson(fr, JsonObject.class);
 

@@ -64,7 +64,10 @@ public class EventSlotMachine {
             cmdArray = itemConfig.getAsJsonArray("commands");
         }
 
-        logFile(minecraft_name, sender, amount, itemName);
+        if (!o.get("_id").getAsString().equals("FORCE")) {
+            logFile(minecraft_name, sender, amount, itemName);
+        }
+
         logging(new String[] { minecraft_name, "after " + duraiton / 20 + "sec", itemName, "" + (TwipConnection.TwipStreamers.get(minecraft_name).slotMachineQueueSize()+1)});
 
     }

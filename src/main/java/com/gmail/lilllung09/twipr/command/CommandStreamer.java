@@ -1,42 +1,51 @@
 package com.gmail.lilllung09.twipr.command;
 
+import com.gmail.lilllung09.twipr.Permissions;
 import com.gmail.lilllung09.twipr.Streamer;
 import com.gmail.lilllung09.twipr.TwipConnection;
-import com.gmail.lilllung09.twipr.TwipR;
 import com.gmail.lilllung09.twipr.TwipRMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CommandStreamer implements DefaultCommand {
+public class CommandStreamer extends DefaultCommand {
+
+    private Plugin plugin;
     private CommandSender commandSender;
+
+    public CommandStreamer(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
-    public void execCommand(CommandSender commandSender, String[] args) {
-        this.commandSender = commandSender;
-        String[] parsedArgs = this.setArgs(args, commandSender.isOp());
+    public void execCommand(CommandSender sender, String[] args) {
+        this.commandSender = sender;
+        String[] parsedArgs = this.setArgs(args, sender.hasPermission(Permissions.COMMANDS_ST_EDIT.getValue()));
 
         if (parsedArgs.length == 0) {
-            new CommandNoPermission().execCommand(commandSender, args);
+            new CommandNoPermission().execCommand(sender, args);
             return;
         }
         if (parsedArgs.length == 1) {
-            new CommandMissMatchArgs().execCommand(commandSender, args);
+            new CommandMissMatchArgs().execCommand(sender, args);
             return;
         }
 
         Streamer s;
-
         // return new String[]{sub, minecraftID} -> add, info
         // return new String[]{sub, arg, minecraftID} -> connect, key, token, preset
         switch (parsedArgs[0]) {
             case "add":
                 if ((s = getStreamer(parsedArgs[1])) != null) {
-                    TwipRMessage.sendWanTo(commandSender, parsedArgs[1] + " 은(는) 이미 등록된 스트리머입니다.");
+                    TwipRMessage.sendWanTo(sender, parsedArgs[1] + " 은(는) 이미 등록된 스트리머입니다.");
                     break;
                 }
 
@@ -46,7 +55,7 @@ public class CommandStreamer implements DefaultCommand {
 
             case "del":
                 if ((s = getStreamer(parsedArgs[1])) == null) {
-                    TwipRMessage.sendWanTo(commandSender, parsedArgs[1] + " 은(는) 등록되지 않은 스트리머입니다.");
+                    TwipRMessage.sendWanTo(sender, parsedArgs[1] + " 은(는) 등록되지 않은 스트리머입니다.");
                     break;
                 }
 
@@ -60,11 +69,11 @@ public class CommandStreamer implements DefaultCommand {
 
             case "info":
                 if ((s = getStreamer(parsedArgs[1])) == null) {
-                    TwipRMessage.sendWanTo(commandSender, parsedArgs[1] + " 은(는) 등록되지 않은 스트리머입니다.");
+                    TwipRMessage.sendWanTo(sender, parsedArgs[1] + " 은(는) 등록되지 않은 스트리머입니다.");
                     break;
                 }
 
-                TwipRMessage.runCmd("tellraw " + commandSender.getName() + " "
+                TwipRMessage.runCmd("tellraw " + sender.getName() + " "
                 + "[" +
                     "{\"text\":\"\\n\"}" +
                     ",{\"text\":\"========[" + parsedArgs[1] + "]======[" + (s.isConnect() ? "ON" : "OFF") + "]=\\n\",\"bold\":true}" +
@@ -73,8 +82,8 @@ public class CommandStreamer implements DefaultCommand {
                         ",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"" + (s.getConnect() ? "미사용 및 연결 끊기(클릭)" : "사용 및 연결 하기(클릭)") + "\"}]}" +
                         ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" +
                         (s.getConnect() ?
-                                "/twipr st connect " + (commandSender.isOp() ? parsedArgs[1] + " " : "") + "false"
-                                : "/twipr st connect " + (commandSender.isOp() ? parsedArgs[1] + " " : "") + "true") +
+                                "/twipr st connect " + (sender.isOp() ? parsedArgs[1] + " " : "") + "false"
+                                : "/twipr st connect " + (sender.isOp() ? parsedArgs[1] + " " : "") + "true") +
                         "\"}" +
                     "}" +
 
@@ -111,7 +120,7 @@ public class CommandStreamer implements DefaultCommand {
             case "alertbox_token":
             case "slotmachine":
                 if ((s = getStreamer(parsedArgs[2])) == null) {
-                    TwipRMessage.sendWanTo(commandSender, parsedArgs[2] + " 은(는) 등록되지 않은 스트리머입니다.");
+                    TwipRMessage.sendWanTo(sender, parsedArgs[2] + " 은(는) 등록되지 않은 스트리머입니다.");
                     break;
                 }
 
@@ -123,7 +132,7 @@ public class CommandStreamer implements DefaultCommand {
 
             case "connect":
                 if ((s = getStreamer(parsedArgs[2])) == null) {
-                    TwipRMessage.sendWanTo(commandSender, parsedArgs[2] + " 은(는) 등록되지 않은 스트리머입니다.");
+                    TwipRMessage.sendWanTo(sender, parsedArgs[2] + " 은(는) 등록되지 않은 스트리머입니다.");
                     break;
                 }
 
@@ -134,12 +143,12 @@ public class CommandStreamer implements DefaultCommand {
                 } else if (parsedArgs[1].equals("false")) {
                     connect = false;
                 } else {
-                    new CommandMissMatchArgs().execCommand(commandSender, args);
+                    new CommandMissMatchArgs().execCommand(sender, args);
                     break;
                 }
 
                 if (s.getConnect() == connect) {
-                    TwipRMessage.sendMsgTo(commandSender, "이미 " + (connect ? "켜져" : "꺼져") + "있습니다.");
+                    TwipRMessage.sendMsgTo(sender, "이미 " + (connect ? "켜져" : "꺼져") + "있습니다.");
                     break;
                 }
 
@@ -155,16 +164,59 @@ public class CommandStreamer implements DefaultCommand {
                 break;
 
             default:
-                new CommandMissMatchArgs().execCommand(commandSender, args);
+                new CommandMissMatchArgs().execCommand(sender, args);
                 return ;
         }
 
 
     }
 
+    @Override
+    public List<String> getSubCommands(CommandSender sender, String[] args) {
+        List<String> list = new ArrayList<>();
+        if (args.length == 2) {
+            list.add("add");
+            list.add("del");
+            list.add("info");
+            list.add("connect");
+            list.add("key");
+            list.add("token");
+            list.add("preset");
+            list.add("worlds");
+
+        } else if (args.length == 3) {
+            switch (args[1]) {
+                case "add": case "del": case "info":
+                case "key": case "token":
+                    break;
+
+                case "connect":
+                    list.add("true");
+                    list.add("false");
+                    break;
+
+                case "preset":
+                    TwipConnection.SlotMachinePreset.keySet().forEach(preset -> list.add(preset));
+                    break;
+            }
+            if (sender.hasPermission(Permissions.COMMANDS_ST_EDIT.getValue()))
+                TwipConnection.TwipStreamers.forEach((name, streamer) -> list.add(name));
+
+        } else if (args.length == 4 && sender.hasPermission(Permissions.COMMANDS_ST_EDIT.getValue())) {
+            if (args[1].equals("connect")) {
+                list.add("true");
+                list.add("false");
+
+            } else if (args[1].equals("preset")) {
+                TwipConnection.SlotMachinePreset.keySet().forEach(k -> list.add(k));
+            }
+        }
+
+        return super.getMatchingSubCommands(list, args[args.length-1]);
+    }
 
     // return new String[]{sub, arg, [minecraftID]};
-    private String[] setArgs(String[] args, boolean isOP) {
+    private String[] setArgs(String[] args, boolean hasPermission) {
         if (args.length == 1) {
             return new String[]{""};
         }
@@ -175,8 +227,8 @@ public class CommandStreamer implements DefaultCommand {
             case "info":
                 if (args.length == 2) { //자신
                     return new String[]{args[1], commandSender.getName()};
-                } else if (args.length == 3 && isOP) { //다른 사람꺼
-                    if (isOP) {
+                } else if (args.length == 3 && hasPermission) { //다른 사람꺼
+                    if (hasPermission) {
                         return new String[]{args[1], args[2]};
                     } else {
                         return new String[]{};
@@ -202,7 +254,7 @@ public class CommandStreamer implements DefaultCommand {
                 if (args.length == 3) { //자신
                     return new String[]{sub, args[2], commandSender.getName()};
                 } else if (args.length == 4 ) { //다른 사람꺼
-                    if (isOP) {
+                    if (hasPermission) {
                         return new String[]{sub, args[3], args[2]};
                     } else {
                         return new String[]{};
@@ -240,7 +292,7 @@ public class CommandStreamer implements DefaultCommand {
     private boolean saveToFile() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
-            FileWriter fw = new FileWriter(TwipR.plugin.getDataFolder().getPath() + "/streamer.json", StandardCharsets.UTF_8);
+            FileWriter fw = new FileWriter(this.plugin.getDataFolder().getPath() + "/streamer.json", StandardCharsets.UTF_8);
             gson.toJson(TwipConnection.STREAMERSJSON, fw);
             fw.flush();
             fw.close();

@@ -6,10 +6,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TwipR extends JavaPlugin {
-
-    public static Plugin plugin = null;
     public static TwipConnection twipConnection = null;
     public static boolean RUN_TEST_RESULT = false;
+    public static Plugin plugin;
 
     @Override
     public void onEnable() {
@@ -21,7 +20,7 @@ public class TwipR extends JavaPlugin {
             getDataFolder().mkdir();
         }
 
-        getServer().getPluginCommand("twipr").setExecutor(new CommandRunner(this));
+        getCommand("twipr").setExecutor(new CommandRunner(this));
         getCommand("twipr").setTabCompleter(new CommandTabComplete(this));
 
 

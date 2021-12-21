@@ -26,11 +26,11 @@ import org.bukkit.Bukkit;
 
 public class Streamer {
 
-    private boolean connect = false;
-    private String key = null;
-    private String token = null;
-    private String minecraft_name = null;
-    private String preset = null;
+    private boolean connect;
+    private String key;
+    private String token;
+    private String minecraft_name;
+    private String preset;
     private String[] worlds;
 
     private WebSocket ws;
@@ -39,6 +39,7 @@ public class Streamer {
 
     JsonParser parser = new JsonParser();
 
+
     public Streamer(boolean connect, String alertbox_key, String alertbox_token, String minecraft_name, String preset, String[] worlds) {
         this.connect = connect;
         this.key = alertbox_key;
@@ -46,6 +47,11 @@ public class Streamer {
         this.minecraft_name = minecraft_name;
         this.preset = preset;
         this.worlds = worlds;
+
+        if (this.key.length() < 2 || this.token.length() < 2) {
+            this.key = "null";
+            this.token = "null";
+        }
 
         StringBuilder url = new StringBuilder();
         try {
@@ -121,6 +127,9 @@ public class Streamer {
 
     public EventSlotMachine getSlotMachineQueuePeek() {
         return this.slotMachineQueue.poll();
+    }
+    public Queue<EventSlotMachine> getSlotMachineQueue() {
+        return this.slotMachineQueue;
     }
     public int slotMachineQueueSize() {
         return this.slotMachineQueue.size();
