@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandRunner implements CommandExecutor {
-	private Map<String, DefaultCommand> registered_commands = new HashMap<>();
+	private final Map<String, DefaultCommand> registered_commands = new HashMap<>();
 
 	public CommandRunner(Plugin plugin) {
 		registered_commands.put("help", new CommandHelpMsg());
@@ -21,7 +21,7 @@ public class CommandRunner implements CommandExecutor {
 		registered_commands.put("test", new CommandTestONOFF());
 		registered_commands.put("queue", new CommandQueue(plugin));
 
-		registered_commands.put("force", new CommandForceSlotEvent(plugin));
+		registered_commands.put("force", new CommandForceSlotEvent());
 	}
 
 	@Override

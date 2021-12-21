@@ -10,25 +10,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public class CommandForceSlotEvent extends DefaultCommand{
-    private Plugin plugin;
-
-    public CommandForceSlotEvent(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
-    public void execCommand(CommandSender commandSender, String[] args) {
+    public void execCommand(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            new CommandMissMatchArgs().execCommand(commandSender, args);
+            new CommandMissMatchArgs().execCommand(sender, args);
             return ;
         }
 
-        if (!commandSender.hasPermission(Permissions.COMMANDS_FORCE_SLOT.getValue())) {
-            new CommandNoPermission().execCommand(commandSender, args);
+        if (!sender.hasPermission(Permissions.COMMANDS_FORCE_SLOT.getValue())) {
+            new CommandNoPermission().execCommand(sender, args);
             return ;
         }
 
-        String sender = args[1];
+        String senderNick = args[1];
         String target = args[2];
         String slot_item = "";
 
@@ -46,7 +40,7 @@ public class CommandForceSlotEvent extends DefaultCommand{
 
 
         jsonObject.addProperty("_id", "FORCE");
-        jsonObject.addProperty("nickname", sender);
+        jsonObject.addProperty("nickname", senderNick);
         jsonObject.addProperty("amount", amount);
         jsonObject.addProperty("comment", message);
 
