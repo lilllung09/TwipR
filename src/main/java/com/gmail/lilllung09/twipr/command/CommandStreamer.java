@@ -44,7 +44,7 @@ public class CommandStreamer extends DefaultCommand {
         // return new String[]{sub, arg, minecraftID} -> connect, key, token, preset
         switch (parsedArgs[0]) {
             case "add":
-                if ((s = getStreamer(parsedArgs[1])) != null) {
+                if (getStreamer(parsedArgs[1]) != null) {
                     TwipRMessage.sendWanTo(sender, parsedArgs[1] + " 은(는) 이미 등록된 스트리머입니다.");
                     break;
                 }
@@ -63,7 +63,6 @@ public class CommandStreamer extends DefaultCommand {
 
                 TwipConnection.STREAMERSJSON.getAsJsonObject("streamers").remove(parsedArgs[1]);
                 this.saveToFile();
-                //this.reloadConfig(parsedArgs[1]);
                 TwipConnection.TwipStreamers.remove(parsedArgs[1]);
                 break;
 

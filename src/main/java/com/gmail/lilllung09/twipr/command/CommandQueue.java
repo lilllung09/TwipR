@@ -48,19 +48,17 @@ public class CommandQueue extends DefaultCommand {
             }
 
             TwipConnection.queueTaskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
-                TwipConnection.TwipStreamers.forEach((minecraft_name, streamer) -> {
-                    if (Bukkit.getPlayer(minecraft_name) != null) {
-                        if (Bukkit.getPlayer(minecraft_name).isOnline()) {
-                            if (streamer.slotMachineQueueSize() > 0) {
-                                for (String world : streamer.applyWorlds()) {
-                                    if (Bukkit.getPlayer(minecraft_name).getWorld().getName().equals(world)) {
-                                        streamer.getSlotMachineQueuePeek().consume();
-                                    }
-                                }
-                            }
-                        }
+                for (Map.Entry<String, Streamer> map : TwipConnection.TwipStreamers.entrySet()) {
+                    if (Bukkit.getPlayer(map.getKey()) == null) continue;
+                    if (!Bukkit.getPlayer(map.getKey()).isOnline()) continue;
+                    if (map.getValue().slotMachineQueueSize() < 1) continue;
+
+                    for (String world : map.getValue().applyWorlds()) {
+                        if (!Bukkit.getPlayer(map.getKey()).getWorld().getName().equals(world)) continue;
+
+                        map.getValue().getSlotMachineQueuePeek().consume();
                     }
-                });
+                }
 
             }, 0L, sec * 20L);
             TwipConnection.queuePeriod = (int) sec;
