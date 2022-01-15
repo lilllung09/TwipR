@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class CommandReload extends DefaultCommand {
     @Override
     public void execCommand(CommandSender sender, String[] args) {
-        if (sender.hasPermission(Permissions.COMMANDS_RELOAD.getValue())) {
+        if (!sender.hasPermission(Permissions.COMMANDS_RELOAD.getValue())) {
             new CommandNoPermission().execCommand(sender, args);
             return ;
         }
