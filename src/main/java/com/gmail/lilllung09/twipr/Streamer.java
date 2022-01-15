@@ -2,6 +2,7 @@ package com.gmail.lilllung09.twipr;
 
 import com.gmail.lilllung09.twipr.twipevent.EventSlotMachine;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -48,7 +49,9 @@ public class Streamer {
         this.preset = preset;
         this.worlds = worlds;
 
-        if (this.key.length() < 2 || this.token.length() < 2) {
+        if (this.key.replace(" ", "").length() < 2
+                || this.token.replace(" ", "").length() < 2) {
+
             this.key = "null";
             this.token = "null";
         }
@@ -72,18 +75,10 @@ public class Streamer {
             this.ws = socket.createSocket(new URI(url.toString()));
             this.ws.addListener(this.webSocketListener);
 
-            if (this.key.replace(" ", "").length() == 0) {
-                return;
-            }
-            if (this.token.replace(" ", "").length() == 0) {
-                return;
-            }
-
-            if (this.connect)
-                this.ws.connect();
+            if (this.connect) this.ws.connect();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            TwipRMessage.sendMsgConsol(minecraft_name + " <- disconnected with error");
         }
     }
 
@@ -98,29 +93,36 @@ public class Streamer {
         }
 
         public void onTextMessage(WebSocket websocket, String message) {
-            //if (message.startsWith("3")) return;
 
-            //logFile(minecraft_name, message);
-            if (!message.startsWith("42"))
-                return;
-            if (message.contains("TOKEN_NOT_FOUND")) {
+            // 불필요 정보
+            if (!message.startsWith("42")) return;
+
+            // 토큰 관련 정보보
+            if (message.contains("TOKEN_NOT_FOUND")) { // 토큰 정보 없음
                 TwipRMessage.sendWanConsol(minecraft_name + " -> TOKEN_NOT_FOUND");
-                return;
+
+            } else if (message.contains("TOKEN_EXPIRED")) { // 토큰 만료
+                TwipRMessage.sendWanConsol(minecraft_name + " -> TOKEN_EXPIRED");
             }
-            if (message.contains("TOKEN_EXPIRED")) {
-                TwipRMessage.sendWanConsol(minecraft_name + " -> TOKEN_EXPRIED");
-                return;
-            }
-            if (message.contains("new donate")) {
-                JsonObject jsonObject = parser.parse(message.substring(2)).getAsJsonArray().get(1).getAsJsonObject();
-                if (jsonObject.getAsJsonObject("slotmachine_data") != null) {
-                    if (TwipConnection.queueTaskState == TwipConnection.QUEUE_STATE_STOP) {
-                        slotMachineQueue.add(new EventSlotMachine(minecraft_name, jsonObject));
+
+            //System.out.println(message);
+            //JsonObject jsonObject = parser.parse(message.substring(2)).getAsJsonArray().get(1).getAsJsonObject();
+            JsonArray jsonArray = parser.parse(message.substring(2)).getAsJsonArray();
+            String messageType = jsonArray.get(0).getAsString();
+            JsonObject messageContents = jsonArray.get(1).getAsJsonObject();
+
+            if (messageType.equals("new donate")) { //일반후원, 영상, 음성, 룰렛 발생시
+
+                if (messageContents.getAsJsonObject("slotmachine_data") != null) {
+                    slotMachineQueue.add(new EventSlotMachine(minecraft_name, messageContents));
+
+                    if (TwipConnection.queueTaskState == TwipConnection.QUEUE_STATE_STOP) { // 큐 형식 미 사용시
                         getSlotMachineQueuePeek().consume();
-                    } else {
-                        slotMachineQueue.add(new EventSlotMachine(minecraft_name, jsonObject));
                     }
                 }
+
+            } else if (message.contains("now")) {
+
             }
         }
     };
