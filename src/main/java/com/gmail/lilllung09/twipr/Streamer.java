@@ -1,5 +1,6 @@
 package com.gmail.lilllung09.twipr;
 
+import com.gmail.lilllung09.twipr.twipevent.EventProcessType;
 import com.gmail.lilllung09.twipr.twipevent.EventSlotMachine;
 
 import com.google.gson.JsonArray;
@@ -37,9 +38,9 @@ public class Streamer {
     private WebSocket ws;
 
     private Queue<EventSlotMachine> slotMachineQueue = new LinkedList<>();
+    private Map<String, EventSlotMachine> slotMachineMap = new HashMap<>();
 
     JsonParser parser = new JsonParser();
-
 
     public Streamer(boolean connect, String alertbox_key, String alertbox_token, String minecraft_name, String preset, String[] worlds) {
         this.connect = connect;
@@ -105,23 +106,40 @@ public class Streamer {
                 TwipRMessage.sendWanConsol(minecraft_name + " -> TOKEN_EXPIRED");
             }
 
-            //System.out.println(message);
-            //JsonObject jsonObject = parser.parse(message.substring(2)).getAsJsonArray().get(1).getAsJsonObject();
             JsonArray jsonArray = parser.parse(message.substring(2)).getAsJsonArray();
+
+            // 내용없음
+            if (jsonArray.size() < 2) return;
             String messageType = jsonArray.get(0).getAsString();
             JsonObject messageContents = jsonArray.get(1).getAsJsonObject();
 
             if (messageType.equals("new donate")) { //일반후원, 영상, 음성, 룰렛 발생시
+                String donateId = messageContents.get("_id").getAsString();
 
-                if (messageContents.getAsJsonObject("slotmachine_data") != null) {
-                    slotMachineQueue.add(new EventSlotMachine(minecraft_name, messageContents));
+                if (messageContents.getAsJsonObject("slotmachine_data") != null) { // 룰렛
+                    EventSlotMachine slotEvent = new EventSlotMachine(minecraft_name, messageContents);
 
-                    if (TwipConnection.queueTaskState == TwipConnection.QUEUE_STATE_STOP) { // 큐 형식 미 사용시
-                        getSlotMachineQueuePeek().consume();
+                    switch (TwipConnection.processType) {
+                        case PROCESS_TYPE_QUEUE:
+                            slotMachineQueue.add(slotEvent);
+                            break;
+
+                        case PROCESS_TYPE_REALTIME:
+                            slotMachineMap.put(donateId, slotEvent);
+
+                        case PROCESS_TYPE_IMMEDIATE:
+                            slotEvent.consume();
+                            break;
                     }
                 }
 
-            } else if (message.contains("now")) {
+            } else if (message.contains("now") && TwipConnection.processType == EventProcessType.PROCESS_TYPE_REALTIME) {
+                String donateNowId = messageContents.get("_id").getAsString();
+
+                if (slotMachineMap.containsKey(donateNowId)) {
+                    slotMachineMap.get(donateNowId);
+                    slotMachineMap.remove(donateNowId);
+                }
 
             }
         }
