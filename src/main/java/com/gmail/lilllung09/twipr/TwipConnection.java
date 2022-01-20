@@ -1,5 +1,6 @@
 package com.gmail.lilllung09.twipr;
 
+import com.gmail.lilllung09.twipr.twipevent.EventProcessType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -17,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 public class TwipConnection {
 
@@ -25,13 +25,8 @@ public class TwipConnection {
 	public static Map<String, Streamer> TwipStreamers = new HashMap<>();
 	public static Map<String, JsonObject> SlotMachinePreset = new HashMap<>();
 
-	public static final char QUEUE_STATE_STOP = 's';
-	public static final char QUEUE_STATE_RUN = 'r';
-	public static final char QUEUE_STATE_PAUSE = 'p';
-
+	public static EventProcessType processType;
 	public static int queueTaskID;
-	public static char queueTaskState = QUEUE_STATE_STOP;
-	public static int queuePeriod;
 
 	public TwipConnection() {
 		if (!(new File(TwipR.plugin.getDataFolder().getPath() + "/streamer.json")).exists()) {
