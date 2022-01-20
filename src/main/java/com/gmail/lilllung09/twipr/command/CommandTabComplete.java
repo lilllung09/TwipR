@@ -28,7 +28,7 @@ public class CommandTabComplete extends DefaultCommand implements TabCompleter {
             if (sender.hasPermission(Permissions.COMMANDS_RELOAD.getValue())) { list.add("reload"); }
             if (sender.hasPermission(Permissions.COMMANDS_STATE.getValue())) { list.add("state"); }
             if (sender.hasPermission(Permissions.COMMANDS_TEST.getValue())) { list.add("test"); }
-            if (sender.hasPermission(Permissions.COMMANDS_QUEUE.getValue())) { list.add("queue"); }
+            if (sender.hasPermission(Permissions.COMMANDS_EVENT_PROCESS_TYPE.getValue())) { list.add("process"); }
             if (sender.hasPermission(Permissions.COMMANDS_FORCE_SLOT.getValue())) { list.add("force"); }
 
             list = super.getMatchingSubCommands(list, args[0]);
