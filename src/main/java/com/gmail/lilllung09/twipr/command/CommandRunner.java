@@ -19,7 +19,7 @@ public class CommandRunner implements CommandExecutor {
 		registered_commands.put("reload", new CommandReload());
 		registered_commands.put("state", new CommandConnectState());
 		registered_commands.put("test", new CommandTestONOFF());
-		registered_commands.put("queue", new CommandQueue(plugin));
+		registered_commands.put("process", new CommandEventProcessType(plugin));
 
 		registered_commands.put("force", new CommandForceSlotEvent());
 	}
@@ -38,7 +38,6 @@ public class CommandRunner implements CommandExecutor {
 
 		DefaultCommand defaultCommand = registered_commands.get(args[0]);
 		defaultCommand.execCommand(sender, args);
-
 		
 		return true;
 	}
